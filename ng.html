@@ -32,6 +32,18 @@
                     return Math.floor(Math.random() * max) + min;
                 }
 
+                $scope.loadAudio = function(data) {
+                    var apiKey = "c461a6c10b68443fa10acbeb86da114b";
+                    var lang = "en-gb";
+                    var src = "Hello, my name is " + data.first_name + " " + data.last_name;
+                    var url = "http://api.voicerss.org/?key=" + apiKey + "&hl=" + lang + "&src=" + src;
+
+                    var audioElement = document.createElement("audio");
+                    audioElement.setAttribute('src', url);
+                    audioElement.play();
+
+                }
+
                 $scope.add = function(){
                     var id = $scope.randomId(100000000, 999999999).toString();
                     var url = 'http://graph.facebook.com/' + id;
@@ -39,6 +51,8 @@
                     $http({ method: 'GET', url: url}).success(function(data){
                         console.log(data);
                         $scope.people.push(data);
+
+                        $scope.loadAudio(data);
                     }).
                     error(function(data){
                         $scope.add();
