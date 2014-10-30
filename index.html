@@ -8,17 +8,20 @@
     </head>
 
     <body ng-app>
-        <div ng-controller="FetchCtrl">
-            <div ng-repeat="person in people" class="person">
-                <img src="https://graph.facebook.com/{{person.id}}/picture?type=large"><br>
-                First Name: {{person.first_name}}<br>
-                Last name: {{person.last_name}}<br>
-                <a href="{{person.link}}">{{person.link}}</a>
-            </div>
-            <div class="clearer"></div>
+        <div ng-controller="FetchCtrl" class="container">
+            <div class="container-inner">
+                <div class="person" ng-show="person">
+                    <img src="https://graph.facebook.com/{{person.id}}/picture?type=large"><br>
+                    <h1>{{person.first_name}} {{person.last_name}}</h1>
+                    <a href="{{person.link}}">Let's be friends on Facebook!</a>
+                </div>
+                <div class="clearer"></div>
 
-            <div>
-                <button ng-click="add()">Load Random User</button>
+                <div>
+                    <a class="load-user" href="#" ng-click="add()">Load Random User</a>
+                </div>
+
+                <div class="loading" ng-show="isLoading"></div>
             </div>
         </div>
 
@@ -26,7 +29,8 @@
 
             function FetchCtrl($scope, $http)
             {
-                $scope.people = new Array();
+                // $scope.people = new Array();
+                $scope.isLoading = false;
 
                 $scope.randomId = function(min, max) {
                     return Math.floor(Math.random() * max) + min;
@@ -48,11 +52,14 @@
                     var id = $scope.randomId(100000000, 999999999).toString();
                     var url = 'http://graph.facebook.com/' + id;
 
+                    $scope.isLoading = true;
+
                     $http({ method: 'GET', url: url}).success(function(data){
                         console.log(data);
-                        $scope.people.push(data);
+                        $scope.person = data;
 
                         $scope.loadAudio(data);
+                        $scope.isLoading = false;
                     }).
                     error(function(data){
                         $scope.add();
